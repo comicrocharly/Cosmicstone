@@ -53,16 +53,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-        case MT(MOD_LALT, KC_RALT):
-            if (record->tap.count && record->event.pressed) {
-            // Tap = RALT, TAB defaults to LALT+TAB
-            if (get_mods() & MOD_BIT(KC_LSFT)) {
-                // shift+tab case
-            }
-            return true;
+        case KC_TAB:
+            if (record->event.pressed) {
+                if (get_mods() & MOD_BIT(KC_RALT)) {
+                    del_mods(MOD_BIT(KC_RALT));
+                    add_mods(MOD_BIT(KC_LALT));
+                    register_code(KC_TAB);
+                    del_mods(MOD_BIT(KC_LALT));
+                    add_mods(MOD_BIT(KC_RALT));
+                    return false;
+                }
             }
     
-        return true;
+            return true;
 
     }
     return true;
