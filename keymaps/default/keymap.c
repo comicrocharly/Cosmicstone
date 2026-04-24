@@ -12,30 +12,7 @@ enum custom_keycodes {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
    switch (keycode) {
-    
-        case LT(1, KC_1) ... LT(1, KC_0):
-            if (record->tap.count == 0 && record->event.pressed) {
-                
-                uint16_t f_key = (keycode & 0xFF) - KC_1 + KC_F1;
-                tap_code(f_key);
-                return false;
-            }
-            break;
 
-        case LT(1, KC_MINS):
-            if (record->tap.count == 0 && record->event.pressed) {
-                tap_code(KC_F11);
-                return false;
-            }
-            break;
-
-        case LT(1, KC_EQL):
-            if (record->tap.count == 0 && record->event.pressed) {
-                tap_code(KC_F12);
-                return false;
-            }
-            break;
-    
         case DPI_UP:
             if (record->event.pressed) {    
                 charybdis_cycle_pointer_default_dpi(true);
@@ -80,32 +57,34 @@ combo_t key_combos[] = {
     COMBO(game_combo, TG(3)),
 };
 
+#define LSFT_CAPS MT(MOD_LSFT,KC_CAPS)
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     //  LAYER 0 - BASE 
     [0] = LAYOUT(
-        KC_ESC,  LT(1,KC_1), LT(1,KC_2),       LT(1,KC_3), LT(1,KC_4), LT(1,KC_5), LT(1,KC_6), LT(1,KC_7), LT(1,KC_8), LT(1,KC_9), LT(1,KC_0), LT(1,KC_MINS),
-        KC_TAB,  KC_Q,       KC_W,             KC_E,       KC_R,       KC_T,       KC_Y,       KC_U,       KC_I,       KC_O,       KC_P,       LT(1,KC_EQL),
-        KC_LSFT, KC_A,       KC_S,             KC_D,       KC_F,       KC_G,       KC_H,       KC_J,       KC_K,       KC_L,       KC_SCLN,    KC_QUOT,
-        KC_LGUI, KC_Z,       KC_X,             KC_C,       KC_V,       KC_B,       KC_N,       KC_M,       KC_COMM,    KC_DOT,     KC_SLSH,    KC_DEL,
-        KC_MUTE, MS_BTN1,    MT(MOD_LALT, KC_RALT), KC_LCTL,    KC_SPC,     KC_ENT,     KC_BSPC,    TG(2),      MO(1)
+        KC_ESC,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+        KC_TAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_EQL,
+        KC_LSFT,   KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+        KC_LGUI,   KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_DEL,
+        KC_MUTE,   MS_BTN1, KC_LALT, KC_LCTL, KC_SPC,  KC_ENT,  KC_BSPC, TG(2),   MO(1)
     ),
 
     //  LAYER 1 - NAVIGATION 
     [1] = LAYOUT(
-        _______,              KC_F1,   KC_F2,   KC_F3,   KC_F4,    KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,
-        _______,              _______, _______, KC_UP,   _______,  _______, _______, _______, _______, _______, KC_PSCR, KC_F12,
-        MT(MOD_LSFT,KC_CAPS), _______, KC_LEFT, KC_DOWN, KC_RIGHT, _______, _______, _______, _______, _______, _______, _______,
-        _______,              _______, DRGSCRL, MS_BTN3, SNIPING,  _______, _______, _______, _______, _______, _______, _______,
-        DPI_RST,              MS_BTN2, _______, _______, _______,  _______, _______, _______, _______
+        _______,   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,
+        _______,   S(KC_1), S(KC_2), S(KC_3), S(KC_4), S(KC_5), S(KC_6), S(KC_7), S(KC_8), S(KC_9), S(KC_0), KC_F12,
+        LSFT_CAPS, KC_GRV,  _______, _______, _______, _______, _______, _______, _______, KC_LBRC, KC_RBRC, _______,
+        _______,   _______, DRGSCRL, MS_BTN3, SNIPING, _______, _______, _______, _______, _______, KC_BSLS, _______,
+        DPI_RST,   MS_BTN2, _______, _______, _______, _______, _______, _______, _______
     ),
 
      // LAYER 2 - MEDIA 
     [2] = LAYOUT(
-        _______, _______, _______, _______, _______,  _______, _______, KC_1,    KC_2,    KC_3,    _______, _______,
-        _______, _______, _______, KC_UP,   _______,  _______, _______, KC_4,    KC_5,    KC_6,    _______, _______,
-        _______, _______, KC_LEFT, KC_DOWN, KC_RIGHT, _______, _______, KC_7,    KC_8,    KC_9,    _______, _______,
-        _______, _______, _______, _______, _______,  _______, _______, _______, KC_0,    _______, _______, _______,
+        _______, _______, _______, _______, _______,  _______, _______, _______,  _______, _______, _______, _______,
+        _______, _______, _______, KC_UP,   _______,  _______, _______, KC_1,     KC_2,    KC_3,    KC_PSCR, _______,
+        _______, _______, KC_LEFT, KC_DOWN, KC_RIGHT, _______, _______, KC_4,     KC_5,    KC_6,    KC_0,    _______,
+        _______, _______, _______, _______, _______,  _______, _______, KC_7,     KC_8,    KC_9,    _______, _______,
         KC_MPLY, _______, _______, _______, _______,  _______, _______, _______, _______
     ),
 
