@@ -2,7 +2,7 @@
 #include "split_util.h"
 #include "keyboards/bastardkb/charybdis/charybdis.h"
 
-// Keycodes custom per DPI e funzioni trackball
+// Trackball custom keycodes
 enum custom_keycodes {
     DPI_UP = SAFE_RANGE,
     DPI_DN,
