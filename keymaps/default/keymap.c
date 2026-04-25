@@ -9,6 +9,9 @@ enum custom_keycodes {
     DPI_RST,
 };
 
+void keyboard_post_init_user(void) {
+    keymap_config.nkro = true;
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
    switch (keycode) {
@@ -74,7 +77,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [1] = LAYOUT(
         _______,   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,
         _______,   S(KC_1), S(KC_2), KC_UP,   S(KC_4), S(KC_5), S(KC_6), S(KC_7), S(KC_8), S(KC_9), S(KC_0), KC_F12,
-        LSFT_CAPS, KC_GRV,  KC_LEFT, KC_DOWN, KC_RIGHT, _______, _______, _______, _______, KC_LBRC, KC_RBRC, _______,
+        LSFT_CAPS, KC_GRV,  KC_LEFT, KC_DOWN, KC_RIGHT,_______, _______, _______, _______, KC_LBRC, KC_RBRC, _______,
         _______,   S(KC_3), DRGSCRL, MS_BTN3, SNIPING, _______, _______, _______, _______, _______, KC_BSLS, _______,
         DPI_RST,   MS_BTN2, _______, _______, _______, _______, _______, _______, _______
     ),
