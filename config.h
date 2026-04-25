@@ -51,4 +51,4 @@
 
 // TAP DANCE
 #define PERMISSIVE_HOLD
-#define TAPPING_TERM 0
+#define TAPPING_TERM 100
