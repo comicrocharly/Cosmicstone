@@ -113,7 +113,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // - ENCODER 
 static char encoder_status[16] = "               ";
 
-bool encoder_update_user(uint8_t index, bool clockwise) {
+bool encoder_update_user(uint8_t index, bool clockwise) { 
+
     switch (get_highest_layer(layer_state)) {
         case 0:                               
             if (clockwise) {
