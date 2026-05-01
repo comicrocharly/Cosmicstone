@@ -168,8 +168,10 @@ bool oled_task_user(void) {
         default: oled_write_P(PSTR("???  "), false); break;
     }
 
+    oled_advance_page(true);
+    
     led_t led_state = host_keyboard_led_state();
-    oled_write_P(led_state.caps_lock ? PSTR("\nCAP  ") : PSTR("     "), false);
+    oled_write_P(led_state.caps_lock ? PSTR("CAP  ") : PSTR("     "), false);
 
     oled_advance_page(true);
     oled_advance_page(true);
