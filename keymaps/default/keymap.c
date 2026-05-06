@@ -97,7 +97,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______,   S(KC_1), S(KC_2), KC_UP,   S(KC_4), S(KC_5), S(KC_6), S(KC_7), S(KC_8), S(KC_9), S(KC_0), KC_F12,
         LSFT_CAPS, KC_GRV,  KC_LEFT, KC_DOWN, KC_RIGHT,_______, _______, _______, _______, KC_LBRC, KC_RBRC, _______,
         _______,   S(KC_3), DRGSCRL, MS_BTN3, SNIPING, _______, _______, _______, _______, _______, KC_BSLS, _______,
-        DPI_RST,   MS_BTN2, _______, _______, _______, _______, _______, _______, _______
+        DPI_RST,   MS_BTN2, _______, _______, _______, _______, _______, _______, _______ 
     ),
 
     //  LAYER 4 - QMK 
@@ -116,7 +116,8 @@ static char encoder_status[16] = "               ";
 bool encoder_update_user(uint8_t index, bool clockwise) { 
 
     switch (get_highest_layer(layer_state)) {
-        case 0:                               
+        case 0:
+        case 2:                               
             if (clockwise) {
                 tap_code(KC_VOLU);
                 snprintf(encoder_status, sizeof(encoder_status), "VOL+");
@@ -125,22 +126,24 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
                 snprintf(encoder_status, sizeof(encoder_status), "VOL-");
             }
             break;
+        
         case 1:
-            if (clockwise) {
-                charybdis_cycle_pointer_default_dpi(true);
-                snprintf(encoder_status, sizeof(encoder_status), "DPI+\n%4d", charybdis_get_pointer_default_dpi());
-            } else {
-                charybdis_cycle_pointer_default_dpi(false);
-                snprintf(encoder_status, sizeof(encoder_status), "DPI-\n%4d", charybdis_get_pointer_default_dpi());
-            }
-            break;
-        case 2:
             if (clockwise) {
                 tap_code(KC_MNXT);
                 snprintf(encoder_status, sizeof(encoder_status), "NEXT");
             } else {
                 tap_code(KC_MPRV);
                 snprintf(encoder_status, sizeof(encoder_status), "PREV");
+            }
+            break;
+
+        case 3:
+            if (clockwise) {
+                charybdis_cycle_pointer_default_dpi(true);
+                snprintf(encoder_status, sizeof(encoder_status), "DPI+\n%4d", charybdis_get_pointer_default_dpi());
+            } else {
+                charybdis_cycle_pointer_default_dpi(false);
+                snprintf(encoder_status, sizeof(encoder_status), "DPI-\n%4d", charybdis_get_pointer_default_dpi());
             }
             break;
     }
