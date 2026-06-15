@@ -18,6 +18,6 @@ Every component was sourced on AliExpress, the case is fully 3D printed, hand-wi
 1. Download QMK MSYS
 2. In QMK MSYS run `qmk setup` and pull the keyboard database
 3. Clone this repo in `/qmk_firmware/keyboards/`
-4. Run `qmk compile -kb <keyboard> -km default`
+4. Run `qmk compile -kb cosmicstone -km default`
 
 
