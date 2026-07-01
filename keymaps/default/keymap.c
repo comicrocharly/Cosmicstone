@@ -7,7 +7,13 @@ enum custom_keycodes {
     DPI_UP = SAFE_RANGE,
     DPI_DN,
     DPI_RST,
+    TL_MEDIA,
 };
+
+// Tap & Hold TL_MEDIA State
+static uint16_t tl_media_timer     = 0;
+static bool     tl_media_held      = false;
+static bool     tl_media_ralt_sent = false;
 
 void keyboard_post_init_user(void) {
     keymap_config.nkro = true;
@@ -33,6 +39,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
+        case TL_MEDIA:
+            if (record->event.pressed) {
+                
+                tl_media_timer     = timer_read();
+                tl_media_held      = true;
+                tl_media_ralt_sent = false;
+            } else {
+                
+                tl_media_held = false;
+                if (tl_media_ralt_sent) {
+                    
+                    unregister_code(KC_RALT);
+                    tl_media_ralt_sent = false;
+                } else {
+                    
+                    layer_invert(1);
+                }
+            }
+            return false;
+
         case KC_TAB:
             if (record->event.pressed) {
                 if (get_mods() & MOD_BIT(KC_RALT)) {
@@ -44,16 +70,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     return false;
                 }
             }
-    
-            return true;
 
     }
     return true;
 }
 
-// - Combos 
-const uint16_t PROGMEM qmk_combo[] =  {MO(3), TG(1), KC_DEL, COMBO_END};
-const uint16_t PROGMEM game_combo[] = {MO(3), TG(1), COMBO_END};
+void housekeeping_task_user(void) {
+    if (tl_media_held && !tl_media_ralt_sent && timer_elapsed(tl_media_timer) > TAPPING_TERM) {
+        register_code(KC_RALT);
+        tl_media_ralt_sent = true;
+    }
+}
+
+// - COMBOS 
+const uint16_t PROGMEM qmk_combo[] =  {MO(3), TL_MEDIA, KC_DEL, COMBO_END};
+const uint16_t PROGMEM game_combo[] = {MO(3), TL_MEDIA, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(qmk_combo, TG(4)),
@@ -70,15 +101,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_EQL,
         KC_LSFT,   KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
         KC_LGUI,   KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_DEL,
-        KC_MUTE,   MS_BTN1, KC_LALT, KC_LCTL, KC_SPC,  KC_ENT,  KC_BSPC, TG(1),   MO(3)
+        KC_MUTE,   MS_BTN1, KC_LALT, KC_LCTL, KC_SPC,  KC_ENT,  KC_BSPC, TL_MEDIA, MO(3)
     ),
 
      // LAYER 1 - MEDIA
     [1] = LAYOUT(
         _______, _______, _______, _______, _______,  _______, _______, KC_1,     KC_2,     KC_3,    KC_0,    _______,
         _______, _______, _______, KC_UP,   _______,  _______, _______, KC_4,     KC_5,     KC_6,    KC_PAST, _______,
-        _______, _______, KC_LEFT, KC_DOWN, KC_RIGHT, _______, _______, KC_7,     KC_8,     KC_9,    _______, KC_ENT,
-        _______, _______, _______, KC_PSCR, _______,  _______, _______, _______,  _______,  _______, _______, _______,
+        _______, _______, KC_LEFT, KC_DOWN, KC_RIGHT, _______, KC_PSCR, KC_7,     KC_8,     KC_9,    _______, KC_ENT,
+        _______, _______, _______, _______, _______,  _______, _______, _______,  _______,  _______, _______, _______,
         KC_MPLY, _______, _______, _______, _______,  _______, _______, _______,  _______
     ),
 
