@@ -1,4 +1,4 @@
-﻿<img src="pics/Readme_Pic.jpg" alt="Cosmicstone" width="900">
+﻿<img src="pics/Readme_Pic.png" alt="Cosmicstone" width="900">
 
 # Cosmicstone
 
