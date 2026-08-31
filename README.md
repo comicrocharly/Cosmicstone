@@ -21,3 +21,7 @@ Every component was sourced on AliExpress, the case is fully 3D printed, hand-wi
 4. Run `qmk compile -kb cosmicstone -km default`
 
 
+
+## License
+
+This project is licensed under the GNU General Public License v3.0. See the [LICENSE](LICENSE) file for details.
