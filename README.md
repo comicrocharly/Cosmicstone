@@ -3,8 +3,8 @@
 # Cosmicstone
 
 Cosmicstone is my personal tailored split keyboard.
-It is powered by the powerful QMK firmware.
-Designed in [Cosmos Keyboard Generator](https://github.com/tomasz-lech/cosmos), inspired by [Charybdis](https://github.com/qmk/qmk_firmware/tree/master/keyboards/bastardkb/charybdis).
+It is powered by the powerful [QMK firmware](https://github.com/qmk/qmk_firmware).
+Designed in [Cosmos Keyboard Generator](https://github.com/rianadon/Cosmos-Keyboards), inspired by [Charybdis](https://github.com/Bastardkb/Charybdis).
 
 It features a split ergonomic design, a thumb-cluster trackball, a rotary encoder, an OLED screen and hotswap sockets.
 
