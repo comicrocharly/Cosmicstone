@@ -10,10 +10,14 @@ enum custom_keycodes {
     TL_MEDIA,
 };
 
-// Tap & Hold TL_MEDIA State
-static uint16_t tl_media_timer     = 0;
-static bool     tl_media_held      = false;
-static bool     tl_media_ralt_sent = false;
+// TL_MEDIA: tap = toggle media layer, hold = RALT (AltGr)
+// Plain keycode (like the original): tap/hold keycodes inside combos are
+// buffered by the combo engine and the tap/hold engine sees them late.
+// Only addition vs the original: while TL_MEDIA is held, pressing any other
+// key engages RALT immediately, so accented keys are never missed.
+static uint16_t tl_media_t0      = 0;
+static bool     tl_media_pending = false;
+static bool     tl_media_hold    = false;
 
 void keyboard_post_init_user(void) {
     keymap_config.nkro = true;
@@ -41,20 +45,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case TL_MEDIA:
             if (record->event.pressed) {
-                
-                tl_media_timer     = timer_read();
-                tl_media_held      = true;
-                tl_media_ralt_sent = false;
+                tl_media_t0      = timer_read();
+                tl_media_pending = true;
             } else {
-                
-                tl_media_held = false;
-                if (tl_media_ralt_sent) {
-                    
+                if (tl_media_pending) {
+                    layer_invert(1);  // quick press -> toggle media layer
+                    tl_media_pending = false;
+                } else if (tl_media_hold) {
                     unregister_code(KC_RALT);
-                    tl_media_ralt_sent = false;
-                } else {
-                    
-                    layer_invert(1);
+                    tl_media_hold = false;
                 }
             }
             return false;
@@ -72,13 +71,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
 
     }
+
+    // Any other key pressed while TL_MEDIA is pending -> AltGr immediately
+    if (tl_media_pending && record->event.pressed && !IS_NOEVENT(record->event)) {
+        register_code(KC_RALT);
+        tl_media_pending = false;
+        tl_media_hold    = true;
+    }
     return true;
 }
 
 void housekeeping_task_user(void) {
-    if (tl_media_held && !tl_media_ralt_sent && timer_elapsed(tl_media_timer) > TAPPING_TERM) {
+    // Fallback: TL_MEDIA held past the term with no other key -> AltGr anyway
+    if (tl_media_pending && timer_elapsed(tl_media_t0) > TAPPING_TERM) {
         register_code(KC_RALT);
-        tl_media_ralt_sent = true;
+        tl_media_pending = false;
+        tl_media_hold    = true;
     }
 }
 
