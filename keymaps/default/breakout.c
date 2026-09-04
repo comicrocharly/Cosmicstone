@@ -31,7 +31,7 @@ extern oled_rotation_t oled_rotation;
 #define BREAKOUT_PADDLE_WIDTH 8
 #endif
 #ifndef BREAKOUT_PADDLE_SPEED    // key-based speed, px per tick
-#define BREAKOUT_PADDLE_SPEED 2
+#define BREAKOUT_PADDLE_SPEED 1
 #endif
 #ifndef BREAKOUT_PADDLE_BOTTOM   // distance of the paddle from the field bottom
 #define BREAKOUT_PADDLE_BOTTOM 4
