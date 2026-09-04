@@ -3,7 +3,8 @@
 
 #include QMK_KEYBOARD_H
 #include "split_util.h"
-#include "keyboards/bastardkb/charybdis/charybdis.h"
+#include "bk_pointing_device.h"
+#include "breakout.h"
 
 // Trackball custom keycodes
 enum custom_keycodes {
@@ -27,22 +28,28 @@ void keyboard_post_init_user(void) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+#ifdef BREAKOUT_ENABLE
+    // Breakout easter egg: let it claim the key if it wants to.
+    if (breakout_on_key_record(keycode, record)) {
+        return false;
+    }
+#endif
    switch (keycode) {
 
         case DPI_UP:
             if (record->event.pressed) {    
-                charybdis_cycle_pointer_default_dpi(true);
+                bkpd_cycle_pointer_default_dpi(true);
             }
             return false;
         case DPI_DN:
             if (record->event.pressed) {
-                charybdis_cycle_pointer_default_dpi(false);
+                bkpd_cycle_pointer_default_dpi(false);
             }
             return false;
         case DPI_RST:
             if (record->event.pressed) {
-                charybdis_cycle_pointer_default_dpi(false);
-                charybdis_cycle_pointer_default_dpi(false);
+                bkpd_cycle_pointer_default_dpi(false);
+                bkpd_cycle_pointer_default_dpi(false);
             }
             return false;
 
@@ -91,6 +98,11 @@ void housekeeping_task_user(void) {
         tl_media_pending = false;
         tl_media_hold    = true;
     }
+
+#ifdef BREAKOUT_ENABLE
+    // Breakout easter egg (no-op when the game is not running).
+    breakout_on_housekeeping();
+#endif
 }
 
 // - COMBOS 
@@ -126,9 +138,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     //  LAYER 2 - GAME 
     [2] = LAYOUT(
-        _______, KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    _______,
-        _______, KC_T,    KC_Q,    KC_W,    KC_E,    KC_R,    _______, _______, _______, _______, _______, _______, 
-        _______, KC_G,    KC_A,    KC_S,    KC_D,    KC_F,    _______, _______, _______, _______, _______, _______,
+        KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    _______,
+        _______, KC_T,    KC_Q,    KC_E,    KC_E,    KC_R,    _______, _______, _______, _______, _______, _______, 
+        _______, KC_G,    KC_S,    KC_S,    KC_F,    KC_F,    _______, _______, _______, _______, _______, _______,
         _______, KC_B,    KC_Z,    KC_X,    KC_C,    KC_V,    _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______
     ),
@@ -156,7 +168,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 static char encoder_status[16] = "               ";
 
 bool encoder_update_user(uint8_t index, bool clockwise) { 
-
+#ifdef BREAKOUT_ENABLE
+    // Breakout easter egg: encoder moves the paddle while the game is on.
+    if (breakout_on_encoder(clockwise)) {
+        return false;
+    }
+#endif
     switch (get_highest_layer(layer_state)) {
         case 0:
         case 2:                               
@@ -181,11 +198,11 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 
         case 3:
             if (clockwise) {
-                charybdis_cycle_pointer_default_dpi(true);
-                snprintf(encoder_status, sizeof(encoder_status), "DPI+\n%4d", charybdis_get_pointer_default_dpi());
+                bkpd_cycle_pointer_default_dpi(true);
+                snprintf(encoder_status, sizeof(encoder_status), "DPI+\n%4d", bkpd_get_pointer_default_dpi());
             } else {
-                charybdis_cycle_pointer_default_dpi(false);
-                snprintf(encoder_status, sizeof(encoder_status), "DPI-\n%4d", charybdis_get_pointer_default_dpi());
+                bkpd_cycle_pointer_default_dpi(false);
+                snprintf(encoder_status, sizeof(encoder_status), "DPI-\n%4d", bkpd_get_pointer_default_dpi());
             }
             break;
     }
@@ -203,6 +220,13 @@ bool oled_task_user(void) {
     if (is_keyboard_left()) {
         return false;
     }
+
+#ifdef BREAKOUT_ENABLE
+    // Breakout easter egg: while the game is running it owns the screen.
+    if (breakout_on_oled()) {
+        return false;
+    }
+#endif
 
     oled_write_P(PSTR("LYR: "), false);
     switch (get_highest_layer(layer_state)) {

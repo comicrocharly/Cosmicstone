@@ -1,20 +1,5 @@
-# Charybdis Sources
-SRC += keyboards/bastardkb/charybdis/charybdis.c
-
 # Controller
-MCU = RP2040
-BOOTLOADER = rp2040
-WAIT_FOR_USB = yes
-BOOTMAGIC_ENABLE = no
-NKRO_ENABLE = yes
 
-MOUSE_ENABLE = yes
-POINTING_DEVICE_ENABLE = yes
 POINTING_DEVICE_DRIVER = pmw3389
-SPLIT_POINTING_ENABLE = yes
-ENCODER_ENABLE = yes
-OLED_ENABLE = yes
 OLED_DRIVER = ssd1306
 
-EXTRAKEY_ENABLE = yes
-MOUSEKEY_ENABLE = yes
