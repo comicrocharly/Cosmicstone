@@ -29,6 +29,10 @@
 
 #ifdef BREAKOUT_ENABLE
 
+#ifndef OLED_ENABLE
+#error "Breakout requires OLED_ENABLE with a 128x32 SSD1306 driver"
+#endif
+
 #include QMK_KEYBOARD_H
 #include "oled_driver.h"
 
