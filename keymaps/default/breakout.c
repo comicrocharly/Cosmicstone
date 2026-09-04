@@ -94,7 +94,7 @@ extern oled_rotation_t oled_rotation;
 #define BREAKOUT_LEVEL_SCORE 0
 #endif
 #ifndef BREAKOUT_COMBO_BONUS_PCT // per extra combo brick: % of the previous combo bricks' total points
-#define BREAKOUT_COMBO_BONUS_PCT 10
+#define BREAKOUT_COMBO_BONUS_PCT 2
 #endif
 
 #define BREAKOUT_BRICK_MAX (BREAKOUT_BRICK_ROWS * BREAKOUT_BRICK_COLS)
@@ -690,8 +690,9 @@ bool breakout_on_key_record(uint16_t keycode, keyrecord_t *record) {
     bool pressed = record->event.pressed;
 
     if (state == ST_IDLE) {
-        // The two trigger keycodes, pressed together while on the trigger
-        // layer, enter the game (splash screen).
+        // Idle: the two trigger keycodes are only *tracked*, never consumed,
+        // so they keep their normal role on the trigger layer. The game
+        // starts when both are held down together.
         if ((layer_state & (1u << BREAKOUT_TRIGGER_LAYER)) == 0) {
             return false;
         }
@@ -700,24 +701,30 @@ bool breakout_on_key_record(uint16_t keycode, keyrecord_t *record) {
             if (trigger_1 && trigger_2) {
                 splash_enter();
             }
-            return true;
+            return false;
         }
         if (keycode == BREAKOUT_TRIGGER_KEYCODE_2) {
             trigger_2 = pressed;
             if (trigger_1 && trigger_2) {
                 splash_enter();
             }
-            return true;
+            return false;
         }
         return false;
     }
 
-    // Game active: exit and restart keys are swallowed.
+    // Game active: the trigger keycodes are reserved. Their presses are
+    // consumed (K1 exits, K2 does nothing); their releases are passed to
+    // the host, so keys that were pressed before the game started are
+    // never left stuck on the host machine.
     if (keycode == BREAKOUT_TRIGGER_KEYCODE_1) {
         if (pressed) {
             game_exit(); // exit key
         }
-        return true;
+        return pressed;
+    }
+    if (keycode == BREAKOUT_TRIGGER_KEYCODE_2) {
+        return pressed;
     }
     if (keycode == BREAKOUT_RESTART_KEYCODE) {
         if (pressed) {
