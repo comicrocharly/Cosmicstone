@@ -94,7 +94,7 @@ extern oled_rotation_t oled_rotation;
 #define BREAKOUT_LEVEL_SCORE 0
 #endif
 #ifndef BREAKOUT_COMBO_BONUS_PCT // per extra combo brick: % of the previous combo bricks' total points
-#define BREAKOUT_COMBO_BONUS_PCT 2
+#define BREAKOUT_COMBO_BONUS_PCT 10
 #endif
 
 #define BREAKOUT_BRICK_MAX (BREAKOUT_BRICK_ROWS * BREAKOUT_BRICK_COLS)
@@ -412,7 +412,9 @@ static void over_screen(void) {
     uint8_t score_y = (uint8_t)(((base >= 2) ? (base - 2) : 0) * OLED_FONT_HEIGHT);
     uint16_t s = score;
     for (uint8_t i = 0; i < 4; i++) {
-        px_char((char)('0' + (s % 10)), (uint8_t)(tx + i * BREAKOUT_PX_FONT_W), score_y, false);
+        // Digits are extracted least-significant first: draw them from
+        // the rightmost column leftwards (units in the last column).
+        px_char((char)('0' + (s % 10)), (uint8_t)(tx + (3 - i) * BREAKOUT_PX_FONT_W), score_y, false);
         s /= 10;
     }
     // One white rectangle around both words (1px margin all around: the
