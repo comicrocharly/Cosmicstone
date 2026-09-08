@@ -59,15 +59,15 @@
 /* In-game RESTART key: a new game from level 1, any time (including the
  * game-over screen). Consumed while the game is running. */
 #ifndef BREAKOUT_RESTART_KEYCODE
-#define BREAKOUT_RESTART_KEYCODE KC_E
+#define BREAKOUT_RESTART_KEYCODE KC_W
 #endif
 
 /* Paddle movement keys (consumed while the game is running). */
 #ifndef BREAKOUT_KEY_LEFT
-#define BREAKOUT_KEY_LEFT KC_S
+#define BREAKOUT_KEY_LEFT KC_A
 #endif
 #ifndef BREAKOUT_KEY_RIGHT
-#define BREAKOUT_KEY_RIGHT KC_F
+#define BREAKOUT_KEY_RIGHT KC_D
 #endif
 
 /* Field size override. By default the field is derived from the display
